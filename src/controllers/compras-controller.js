@@ -11,4 +11,10 @@ export function compras(app, bd){
         bd.compras.push(newCompra);
         res.send(req.body);
     })
+
+    app.get("/compras/:id", (req, res) => {
+        const param = req.params.id
+        const compraParam = bd.compras;
+        res.send(compraParam.filter((element)=>element.id == param ))
+    })
 }
