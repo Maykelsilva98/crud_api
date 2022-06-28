@@ -17,4 +17,13 @@ export function compras(app, bd){
         const compraParam = bd.compras;
         res.send(compraParam.filter((element)=>element.id == param ))
     })
+
+    app.delete("/compras/:id", (req, res) => {
+        const param = req.params.id
+        const compras = bd.compras;
+        const compraParam = compras.filter((element)=>element.id == param );
+        compras.splice(compras.indexOf(compraParam), 1)
+        
+        res.send(`{"mensagem" : "${param} deletado"}`)
+    })
 }
