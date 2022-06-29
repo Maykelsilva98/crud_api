@@ -8,5 +8,5 @@ app.use(express.json());
 produtos(app, bd);
 
 app.listen(3003, () => {
-    console.log("TUDO OK!");
+    console.log("Funcionando!");
   });
