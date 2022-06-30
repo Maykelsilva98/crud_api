@@ -1,3 +1,5 @@
 export const bd = {
-    pagamentos: []
+    pagamentos: [],
+    compras: [],
+    clientes: []
 }

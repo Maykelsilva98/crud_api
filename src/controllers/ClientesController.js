@@ -1,8 +1,8 @@
 import { ClientesModel } from "../models/ClientesModel.js"
 
-export const ClientesController = (app, db) => {
+export const ClientesController = (app, bd) => {
     app.get("/clientes", (req, res) => {
-        res.send(db.clientes)
+        res.send(bd.clientes)
     })
 
     app.post("/clientes", (req, res) => {
@@ -16,14 +16,14 @@ export const ClientesController = (app, db) => {
             body.id_compras
         )
 
-        db.clientes.push(newUser)
+        bd.clientes.push(newUser)
         
         res.send(req.body) 
     })
 
     app.get("/clientes/:id", (req, res) => {
         const param = req.params.id
-        const users = db.clientes
+        const users = bd.clientes
 
         res.send(users.filter(el => el.id == param))
     })
@@ -31,7 +31,7 @@ export const ClientesController = (app, db) => {
     app.put("/clientes/:id", (req, res) => {
         const param = req.params.id
         const body = req.body
-        const clientes = db.clientes
+        const clientes = bd.clientes
         const clienteAntigoIndex = clientes.findIndex(el => el.id == param)
         const clienteAntigo = clientes[clienteAntigoIndex]
 
@@ -54,7 +54,7 @@ export const ClientesController = (app, db) => {
 
     app.delete("/clientes/:id", (req, res) => {
         const param = req.params.id
-        const clientes = db.clientes
+        const clientes = bd.clientes
         const cliente = clientes.findIndex(el => el.id == param)
         
         res.json({
