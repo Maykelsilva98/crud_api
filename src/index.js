@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json()); // middleware, manipula a requisição antes de chegar na rota
 
-compras(app, bd);
+compras(app, bdSqlite);
 
 app.listen(3000, ()=>{
     console.log('Servidor rodando na porta 3000');

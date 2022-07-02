@@ -1,5 +1,5 @@
 import sqlite3 from 'sqlite3';
-export const bdSqlite = new sqlite3.Database('./src/infra/database.db');
+export const bdSqlite = new sqlite3.Database('./infra/database.db');
 
 //Processamento de sinal
 process.on('SIGINT', () =>

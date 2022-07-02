@@ -1,15 +1,27 @@
 import { ComprasModel } from "../models/ComprasModel.js";
+import sqlite3 from 'sqlite3';
+import {bdSqlite} from '../infra/sqlite-db.js'
 
-export function compras(app, bd){
+export function compras(app, bdSqlite){
     app.get("/compras", (req, res) => {
-        res.send(bd.compras)
+        bdSqlite.all("SELECT * FROM COMPRAS", (err,rows)=>{
+        if(err){
+            throw new Error(`Erro ao rodar a consulta: ${err}`)
+        }else{
+            res.send(rows)
+        }
+        })
     })
 
     app.post("/compras", (req, res) => {
         const body = req.body;
         const newCompra = new ComprasModel(body.id, body.data_compra, body.id_estoque, body.id_cliente);
-        bd.compras.push(newCompra);
-        res.send(req.body);
+        bd.run(
+            "INSERT INTO COMPRAS ( ID, DATA_COMPRA, ID_ESTOQUE, ID_CLIENTE) VALUES (?, ?)",body.id, body.data_compra, body.id_estoque, body.id_cliente,
+            function(err){
+            if (err) {
+            throw new Error(`Erro ao inserir: ${err}`)
+            }});
     })
 
     app.get("/compras/:id", (req, res) => {
