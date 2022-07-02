@@ -15,9 +15,8 @@ export function compras(app, bdSqlite){
 
     app.post("/compras", (req, res) => {
         const body = req.body;
-        const newCompra = new ComprasModel(body.id, body.data_compra, body.id_estoque, body.id_cliente);
-        bd.run(
-            "INSERT INTO COMPRAS ( ID, DATA_COMPRA, ID_ESTOQUE, ID_CLIENTE) VALUES (?, ?)",body.id, body.data_compra, body.id_estoque, body.id_cliente,
+        bdSqlite.run(
+            "INSERT INTO COMPRAS (DATA_COMPRA, ID_ESTOQUE, ID_CLIENTE) VALUES (?, ?, ?)",body.data_compra, body.id_estoque, body.id_cliente,
             function(err){
             if (err) {
             throw new Error(`Erro ao inserir: ${err}`)
