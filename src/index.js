@@ -2,6 +2,7 @@ import express from 'express';
 import { compras } from './controllers/compras-controller.js';
 import { bd } from './infra/bd.js';
 import sqlite3 from 'sqlite3';
+import {bdSqlite} from './infra/sqlite-db.js'
 
 const app = express();
 
