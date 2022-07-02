@@ -1,6 +1,8 @@
 import express from 'express';
 import { compras } from './controllers/compras-controller.js';
 import { bd } from './infra/bd.js';
+import sqlite3 from 'sqlite3';
+
 const app = express();
 
 app.use(express.json()); // middleware, manipula a requisição antes de chegar na rota
