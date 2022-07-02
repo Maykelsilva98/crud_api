@@ -1,58 +1,66 @@
 import { ComprasModel } from "../models/ComprasModel.js";
 import sqlite3 from 'sqlite3';
 import {bdSqlite} from '../infra/sqlite-db.js'
+import { ComprasDAO } from "../DAO/compras-dao.js";
 
-export function compras(app, bdSqlite){
+export function compras(app,bdSqLite){
+    const DadosDAO = new ComprasDAO(bdSqLite);
+
     app.get("/compras", (req, res) => {
-        bdSqlite.all("SELECT * FROM COMPRAS", (err,rows)=>{
-        if(err){
-            throw new Error(`Erro ao rodar a consulta: ${err}`)
-        }else{
-            res.send(rows)
-        }
-        })
+        DadosDAO.listarCompras()
+        .then((result) => {
+          res.json(result)})
+        .catch((err) => {res.send(err)}) 
     })
 
     app.post("/compras", (req, res) => {
         const body = req.body;
-        bdSqlite.run(
-            "INSERT INTO COMPRAS (DATA_COMPRA, ID_ESTOQUE, ID_CLIENTE) VALUES (?, ?, ?)",body.data_compra, body.id_estoque, body.id_cliente,
-            function(err){
-            if (err) {
-            throw new Error(`Erro ao inserir: ${err}`)
-            }});
+        const NovaCompra = new ComprasModel(body.id, body.data_compra, body.id_estoque, body.id_cliente)
+        DadosDAO.inserirCompras(NovaCompra)
+        .then((result) => {
+        res.send("inserido com sucesso");
+        }).catch((err) => {
+          res.send(err);
+        }) 
+
     })
 
     app.get("/compras/:id", (req, res) => {
-        const param = req.params.id
-        const compraParam = bd.compras;
-        res.send(compraParam.filter((element)=>element.id == param ))
+        const id = req.params.id;
+        DadosDAO.listarComprasID(id)
+        .then((result) => {
+          res.send(result);
+        }).catch((err) => {
+          res.send(err);
+        })
     })
 
     app.delete("/compras/:id", (req, res) => {
-        const param = req.params.id
-        const compras = bd.compras;
-        const compraParam = compras.filter((element)=>element.id == param );
-        compras.splice(compras.indexOf(compraParam), 1)
-
-        res.send(`{"mensagem" : "${param} deletado"}`)
+        const param = req.params.id;
+        DadosDAO.deletarCompra(param)
+            .then((result)=>{
+              res.send(`Usuário deletado com sucesso`);
+            }).catch((err)=>{
+              res.send(err);
+            })
     })
 
     app.put("/compras/:id", (req, res) => {
         const param = req.params.id;
         const body = req.body;
-        for(let i = 0; i <= bd.compras.length; i++ ){
-            if(bd.compras[i].id == param ){
-                const DadoAntigo = bd.compras[i];
-                const DadoNovo = new ComprasModel(
+        const compras = DadosDAO.listarComprasID(id);
+        const DadoNovo = new ComprasModel(
                 body.id || DadoAntigo.id,
-                body.data_compra|| DadoAntigo.data_compra,
-                body.id_estoque|| DadoAntigo.id_estoque,
-                body.id_cliente || DadoAntigo.id_cliente
-                )
-                bd.compras.splice(i,1,DadoNovo)
-                res.json({"Dado Alterado": DadoNovo, "Dados Antigos:": DadoAntigo})    
-            }
-        }
+                body.data_compra|| compras.data_compra,
+                body.id_estoque|| compras.id_estoque,
+                body.id_cliente || compras.id_cliente)
+        const parametro = [DadoNovo.data_compra, DadoNovo.id_estoque, DadoNovo.id_cliente, param];
+        const compraAtual = DadosDAO.alterarUsuario(parametro)
+            .then((result) => {
+                res.send(compraAtual)
+            })
+            .catch((error) => {
+                res.send(err);
+            })    
     })
 }
