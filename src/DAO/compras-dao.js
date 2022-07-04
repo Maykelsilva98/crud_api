@@ -1,6 +1,6 @@
 export class ComprasDAO{
     constructor(bd){
-        this.bd = bd
+        this.bd = bd;
     }
 
     listarCompras(){
@@ -9,19 +9,19 @@ export class ComprasDAO{
               if (error) {
                 reject("Erro ao selecionar o banco")
               } else {
-                resolve({ "TABLE SELECIONADA": result });
+                resolve({ "TABLE SELECTED": result });
               }
             })
           })
     }
 
-    inserirCompras(id){
+    inserirCompras(novaCompra){
         return new Promise((resolve, reject) => {
-            this.bd.all('SELECT * FROM COMPRAS  WHERE id = ?', [id], (error, rows) => {
+            this.bd.run('INSERT INTO COMPRAS (id, data_compra, id_estoque, id_cliente) VALUES (?,?,?,?)', [novaCompra.id, novaCompra.data_compra, novaCompra.id_estoque, novaCompra.id_cliente], (error) => {
               if (error) {
-                reject({ "ERRO": error.message })
+                reject('Erro ao inserir compra')
               } else {
-                resolve({ "Compras": rows })
+                resolve("Compra inserida com sucesso")
               }
             })
           })
@@ -29,7 +29,7 @@ export class ComprasDAO{
 
     listarComprasID(id) {
         return new Promise((resolve, reject) => {
-          this.bd.all('SELECT * FROM USUARIOS  WHERE id = ?', [id], (error, rows) => {
+          this.bd.all('SELECT * FROM COMPRAS WHERE id = ?', [id], (error, rows) => {
             if (error) {
               reject({ "ERRO": error.message })
             } else {
@@ -41,7 +41,7 @@ export class ComprasDAO{
 
     alterarCompra(compraAtualizada) {
         return new Promise((resolve, reject) => {
-          this.bd.run('UPDATE COMPRAS SET DATA_COMPRA = ?, ID_ESTOQUE = ?, ID_CLIENTE = ? WHERE id = ?' , (error) => {compraAtualizada
+          this.bd.run('UPDATE COMPRAS SET DATA_COMPRA = ?, ID_ESTOQUE = ?, ID_CLIENTE = ? WHERE id = ?' , compraAtualizada, (error) => {
             if (error) reject('Não foi possível atualizar o usuário');
             else resolve('Usuário atualizado');
           });
