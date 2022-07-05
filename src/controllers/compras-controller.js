@@ -1,49 +1,99 @@
 import { ComprasModel } from "../models/ComprasModel.js";
+// import sqlite3 from 'sqlite3';
+// import {bdSqlite} from '../infra/sqlite-db.js'
+import { ComprasDAO } from "../DAO/compras-dao.js";
 
-export function compras(app, bd){
+export const compras = (app,bdSqLite)=>{
+    const DadosDAO = new ComprasDAO(bdSqLite);
+
     app.get("/compras", (req, res) => {
-        res.send(bd.compras)
-    })
-
-    app.post("/compras", (req, res) => {
-        const body = req.body;
-        const newCompra = new ComprasModel(body.id, body.data_compra, body.id_estoque, body.id_cliente);
-        bd.compras.push(newCompra);
-        res.send(req.body);
+        const data = async()=>{
+          try{
+            const compra = await DadosDAO.listarCompras()
+            res.status(200).json(compra)
+          }catch(error){
+            res.status(404).json(error)
+          }
+        }
+        data();
+        
     })
 
     app.get("/compras/:id", (req, res) => {
-        const param = req.params.id
-        const compraParam = bd.compras;
-        res.send(compraParam.filter((element)=>element.id == param ))
+      const data = async()=>{
+        try{
+            const compra = await DadosDAO.listarComprasID(req.params.id);
+            res.status(200).json(compra)
+        }catch(error){
+            res.status(404).json(error)
+        }
+      }
+      data();
+    })
+    app.post("/compras", (req, res) => {
+      const body = req.body;
+        const novaCompra = new ComprasModel(body.data_compra, body.id_estoque, body.id_cliente);
+        const data = async()=>{
+            try{
+                const compra = await DadosDAO.inserirCompras(novaCompra);
+                res.status(201).json(compra)
+            }catch(error){
+                res.status(404).json(error)
+            }
+        }
+        data();
     })
 
     app.delete("/compras/:id", (req, res) => {
-        const param = req.params.id
-        const compras = bd.compras;
-        const compraParam = compras.filter((element)=>element.id == param );
-        compras.splice(compras.indexOf(compraParam), 1)
-
-        res.send(`{"mensagem" : "${param} deletado"}`)
+      const data = async()=>{
+        try{
+            const compra = await DadosDAO.deletarCompra(req.params.id);
+            res.status(201).json(compra)
+        }catch(error){
+            res.status(404).json(error)
+        }
+    }
+    data();
     })
 
     app.put("/compras/:id", (req, res) => {
-        const param = req.params.id;
-        const body = req.body;
-        for(let i = 0; i <= bd.compras.length; i++ ){
-            if(bd.compras[i].id == param ){
-                const DadoAntigo = bd.compras[i];
-                const DadoNovo = new ComprasModel(
-                body.id || DadoAntigo.id,
-                body.data_compra|| DadoAntigo.data_compra,
-                body.id_estoque|| DadoAntigo.id_estoque,
-                body.id_cliente || DadoAntigo.id_cliente
-                )
-                bd.compras.splice(i,1,DadoNovo)
-                res.json({"Dado Alterado": DadoNovo, "Dados Antigos:": DadoAntigo})    
-            }
-        }
-        
-        // res.send(`{"mensagem" : "${param} atualizado"}`)
+      const body = req.body;
+      const id = req.params.id;
+          const data = async()=>{
+              try{
+                  const compraDadosAntigos = await DadosDAO.listarComprasID(id);
+                  const compraAtualizada = new 
+                      ComprasModel(body.data_compra || compraDadosAntigos[0].data_compra, 
+                              body.id_estoque ||compraDadosAntigos[0].id_estoque, 
+                              body.id_cliente || compraDadosAntigos[0].id_cliente)
+
+                  const parametro = 
+                  [compraAtualizada.data_compra, 
+                      compraAtualizada.id_estoque, 
+                      compraAtualizada.id_cliente, id]
+                      console.log(parametro)
+                  const compra = await DadosDAO.alterarCompra(parametro);
+                  res.status(201).json(compra)
+              }catch(error){
+                  res.status(404).json(error)
+              }
+          }
+          data();
+        // const param = req.params.id;
+        // const body = req.body;
+        // const compras = DadosDAO.listarComprasID(id);
+        // const DadoNovo = new ComprasModel(
+        //         body.id || DadoAntigo.id,
+        //         body.data_compra|| compras.data_compra,
+        //         body.id_estoque|| compras.id_estoque,
+        //         body.id_cliente || compras.id_cliente)
+        // const parametro = [DadoNovo.data_compra, DadoNovo.id_estoque, DadoNovo.id_cliente, param];
+        // const compraAtual = DadosDAO.alterarUsuario(parametro)
+        //     .then((result) => {
+        //         res.send(compraAtual)
+        //     })
+        //     .catch((error) => {
+        //         res.send(error);
+        //     })    
     })
 }

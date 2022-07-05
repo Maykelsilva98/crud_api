@@ -10,5 +10,8 @@ process.on('SIGINT', () =>
         process.exit(0);
     })
 );
+<<<<<<< HEAD
 
 export{bd};
+=======
+>>>>>>> origin/compras
