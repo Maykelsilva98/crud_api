@@ -1,66 +1,104 @@
 import { ClientesModel } from "../models/ClientesModel.js"
+import { ClientesDAO } from "../dao/ClientesDAO.js"
 
-export const ClientesController = (app, bd) => {
-    app.get("/clientes", (req, res) => {
-        res.send(bd.clientes)
+export const ClientesController = (app, db) => {
+    const dao = new ClientesDAO(db)
+    
+    app.get("/clientes", async (req, res) => {
+        try {
+            const clientes = await dao.getClientes()
+
+            res.send(clientes)
+        } catch (error) {
+            console.log(error)
+
+            res.json({
+                "Error": error.message
+            })
+        }
     })
 
-    app.post("/clientes", (req, res) => {
+    app.get("/clientes/:id", async (req, res) => {
+        const id = req.params.id
+
+        try {
+            const result = await dao.getClientesByID(id)
+
+            res.send(result)
+        } catch(error) {
+            res.json({
+                "Error": error.message
+            })
+        }
+    })
+
+    app.post("/clientes", async (req, res) => {
         const body = req.body
-        const newUser = new ClientesModel(
-            body.id, 
-            body.cliente_id, 
-            body.valor, 
-            body.data, 
-            body.forma_pagamento, 
-            body.id_compras
+        const novoCliente = new ClientesModel(
+            body.cpf, 
+            body.email, 
+            body.endereco, 
+            body.sexo, 
+            body.data_nascimento, 
+            body.celular, 
+            body.id_compras, 
+            body.id_pagamentos, 
+            body.data_insercao
         )
-
-        bd.clientes.push(newUser)
         
-        res.send(req.body) 
+        try {
+            const cliente_inserido = await dao.addCliente(novoCliente)
+            res.send(cliente_inserido)
+        } catch (error) {
+            res.json({
+                "Error": error.message
+            })
+        }
+
     })
 
-    app.get("/clientes/:id", (req, res) => {
-        const param = req.params.id
-        const users = bd.clientes
 
-        res.send(users.filter(el => el.id == param))
-    })
-
-    app.put("/clientes/:id", (req, res) => {
-        const param = req.params.id
+    app.put("/clientes/:id", async (req, res) => {
         const body = req.body
-        const clientes = bd.clientes
-        const clienteAntigoIndex = clientes.findIndex(el => el.id == param)
-        const clienteAntigo = clientes[clienteAntigoIndex]
+        const param = req.params.id
+        const clienteAntigo = await dao.getClientesByID(param)
 
-        const clienteAtualizado = new ClientesModel(
-            body.id || clienteAntigo.id, 
-            body.cliente_id || clienteAntigo.cliente_id, 
-            body.valor || clienteAntigo.valor, 
-            body.data || clienteAntigo.data, 
-            body.forma_pagamento || clienteAntigo.forma_pagamento, 
-            body.id_compras || clienteAntigo.id_compras
+        const clienteNovo = new ClientesModel(
+            body.CPF || clienteAntigo.cpf, 
+            body.EMAIL || clienteAntigo.email, 
+            body.ENDERECO || clienteAntigo.endereco, 
+            body.SEXO || clienteAntigo.sexo, 
+            body.DATA_NASCIMENTO || clienteAntigo.data_nascimento, 
+            body.CELULAR || clienteAntigo.celular, 
+            body.ID_COMPRAS || clienteAntigo.id_compras, 
+            body.ID_COMPRAS || clienteAntigo.id_pagamentos, 
+            body.DATA_INSERCAO || clienteAntigo.data_insercao
         )
+        
+        try {
+            await dao.updateCliente(param, clienteNovo)
 
-        clientes.splice(clienteAntigoIndex, 1, clienteAtualizado)
-
-        res.json({
-            "Atualizado corretamente": clienteAntigo,
-            "Novos dados": clienteAtualizado
-        })
+            res.json({
+                "Dado antigo" : clienteAntigo, 
+                "Dado novo": await dao.getClientesByID(param)
+            })
+        } catch (error) {
+            res.json({
+                "Error": error.message
+            })
+        }
     })
 
-    app.delete("/clientes/:id", (req, res) => {
+    app.delete("/clientes/:id", async (req, res) => {
         const param = req.params.id
-        const clientes = bd.clientes
-        const cliente = clientes.findIndex(el => el.id == param)
-        
-        res.json({
-            "Cliente removido com sucesso": clientes[cliente]
-        })
 
-        clientes.splice(cliente, 1)
+        try {
+            const cliente_deletado = await dao.removeCliente(param)
+            res.send(cliente_deletado)
+        } catch (error) {
+            res.json({
+                "Error": error.message
+            })
+        }
     })
 }
