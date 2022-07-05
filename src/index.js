@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import express from 'express';
-import { db } from './infra/db.js';
+import { db } from './infra/create-and-populate.js';
 import { ClientesController } from './controllers/ClientesController.js';
 
 const app = express()
