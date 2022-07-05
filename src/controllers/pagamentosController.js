@@ -1,33 +1,55 @@
 import { Pagamentos } from "../models/pagamentosModel.js";
+import { PagamentosDao } from "../DAO/pagamentosDao.js"
 
 export const pagamentosController = (app, bd) =>{
-    app.get("/pagamentos", (req, res) =>{
-        res.send(bd.pagamentos)
+
+    const pagamentosDao = new PagamentosDao(bd)
+
+    app.get("/pagamentos", async (req, res) =>{
+        try {
+            const pagamento = await pagamentosDao.getPagamentos()
+            res.status(200).send(pagamento)
+        } catch(erro){
+            res.status(400).send(erro)
+        }
     })
 
-    app.post("/pagamentos", (req, res) =>{
+    app.get("/pagamentos/:id", async (req, res) =>{
+        const id = req.params.id
+        try {
+            const pagamentoID = await pagamentosDao.getPagamentosId(id)
+            res.status(200).send(pagamentoID)
+        } catch(erro){
+            res.status(400).send(erro)
+        }
+    })
+
+    app.post("/pagamentos",  async (req, res) =>{
         const body = req.body
         const novoPagamento = new Pagamentos(body.id, body.cliente_id, body.valor, body.data, 
-            body.forma_pagamento, body.id_compras )
-        bd.pagamentos.push(novoPagamento)
-        res.send("Objeto adicionado")
+            body.forma_pagamento, body.id_compras)
+        try{
+            const pagamento_add = await pagamentosDao.postPagamentos(novoPagamento)
+            console.log(pagamento_add)
+            res.status(200).send(pagamento_add)
+        }catch(erro){
+            res.status(400).send("erro")
+        }
     })
 
-    app.delete("/pagamentos/:id", (req, res)=>{
-        const par = req.params.id
-        bd.pagamentos.forEach((x, i) =>{
-            if (x.id = par){
-                bd.pagamentos.splice(i, 1)
-                res.send("Objeto removido")
-            }
-        })
-        res.send("Objeto não encontrado")
+    app.delete("/pagamentos/:id", async (req, res)=>{
+        const id = req.params.id
+        try{
+            const pagamento_del = await pagamentosDao.deletePagamentos(id)
+            res.status(200).send(pagamento_del)    
+        }catch(erro){
+            res.status(400).send(erro)
+        }
     })
 
-    app.put("/pagamentos/:id", (req, res) => {
-        const par = req.params.id
-        const indice = bd.pagamentos.findIndex(x => x.id == par)
-        const dadoAntigo = bd.pagamentos[indice]
+    app.put("/pagamentos/:id", async (req, res) => {
+        const id = req.params.id
+        const dadoAntigo = await pagamentosDao.getPagamentosId(id)
         const dadoNovo = req.body
         
         const pagamentoNovo = new Pagamentos(
@@ -39,7 +61,11 @@ export const pagamentosController = (app, bd) =>{
             dadoNovo.id_compras || dadoAntigo.id_compras
             )
             
-        bd.pagamentos.splice(indice, 1, pagamentoNovo)
-        res.json({"Pagamento antigo": dadoAntigo, "Pagamento novo": dadoNovo})
+        try{
+            const pagamento_autal = await pagamentosDao.putPagamentos(id, pagamentoNovo)
+            res.status(200).json({"Dado antigo" : dadoAntigo, "Dado novo": await pagamentosDao.getPagamentosId(id)})
+        } catch(erro){
+            res.status(400).send(erro)
+        }
     })
 }
