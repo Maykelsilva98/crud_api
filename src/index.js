@@ -1,5 +1,5 @@
 import express from "express";
-import { bd } from "./infra/bd.js";
+import { bd } from "./infra/sqlite-bd.js";
 import { ClientesController } from './controllers/ClientesController.js';
 import { pagamentosController } from "./controllers/PagamentosController.js";
 import { compras } from './controllers/compras-controller.js';

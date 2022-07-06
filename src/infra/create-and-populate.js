@@ -1,5 +1,4 @@
 import sqlite3 from 'sqlite3';
-
 const db = new sqlite3.Database("./database.db");
 
 const PAGAMENTOS_SCHEMA = `
@@ -38,9 +37,17 @@ CREATE TABLE IF NOT EXISTS "PRODUTOS" (
     "DESCRICAO" varchar(64)
   );`;
 
+
+function criaTabelaProdutos(){
+    db.run(PRODUTOS_SCHEMA, (error) =>{
+        if (error) console.log("Erro ao cria a tabela produtos.")
+    })
+}
 db.serialize( ()=> {
-    criaTabelaUsr();
+    criaTabelaProdutos();
 });
+
+
 /*
 Esse arquivo deve ser executado apenas uma vez para que a o banco seja criado e populado
 */
@@ -79,6 +86,9 @@ db.serialize( ()=> {
     criaTabelaCompra();
     populaTabelaCompra();
 });
+
+
+
 const CRIAR_SCHEMA_CLIENTES = `
 CREATE TABLE IF NOT EXISTS "CLIENTES" (
     "ID" INTEGER PRIMARY KEY AUTOINCREMENT,
