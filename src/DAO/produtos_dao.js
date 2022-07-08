@@ -15,7 +15,7 @@ export class ProdutosDao {
     listarProdutosID(id) {
       return new Promise((resolve, reject) => {
         this.database.all(`SELECT * FROM PRODUTOS WHERE id = ${id}`, (error, resultado) => {
-            if(error) reject("Erro ao adicionar o banco")
+            if(error) reject("Erro ao listar banco")
             else resolve(resultado)
               })
         })
@@ -24,20 +24,20 @@ export class ProdutosDao {
     addProdutos(Produto) {
         return new Promise ((resolve, reject) => {
             this.database.run(
-                `INSERT INTO PRODUTOS (id, nome, cor, marca, peso, tamanho, valor, descricao) 
+                `INSERT INTO PRODUTOS (nome, cor, marca, peso, tamanho, valor, descricao, id) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
                 [Produto.nome, Produto.cor, Produto.marca, Produto.peso, Produto.tamanho, Produto.valor, Produto.descricao, Produto.id],
                 (error) => {
-                  if(error) reject("Erro ao adicionar o banco")
+                  if(error) reject("Erro ao adicionar banco")
                   else resolve("Valor inserido")
                 })
         })
     }
 
-    alterarProdutos(parametro) {
+    alterarProdutos(produtosAtualizados) {
         return new Promise((resolve, reject) => {
             this.database.run(`UPDATE PRODUTOS 
-            SET nome = ?, cor = ?, marca = ?, peso = ?, tamanho = ?, valor = ?, descricao = ? WHERE id = ?`, parametro,
+            SET nome = ?, cor = ?, marca = ?, peso = ?, tamanho = ?, valor = ?, descricao = ? WHERE id = ?`, produtosAtualizados,
                 (error) => {
                   if(error) reject ("Erro ao atualizar produto")
                   else resolve("Produto atualizado")
