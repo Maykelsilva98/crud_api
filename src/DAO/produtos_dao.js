@@ -26,7 +26,7 @@ export class ProdutosDao {
             this.database.run(
                 `INSERT INTO PRODUTOS (id, nome, cor, marca, peso, tamanho, valor, descricao) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
-                [Produto.nome, Produto.cor, Produto.marca, Produto.peso, Produto.tamanho, Produto.valor, Produto.descricao, Produto.id],
+                [Produto.id, Produto.nome, Produto.cor, Produto.marca, Produto.peso, Produto.tamanho, Produto.valor, Produto.descricao],
                 (error) => {
                   if(error) reject("Erro ao adicionar o banco")
                   else resolve("Valor inserido")

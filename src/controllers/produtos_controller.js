@@ -1,6 +1,7 @@
 import { Produtos } from "../models/produtos_models.js";
 import { ProdutosDao } from "../DAO/produtos_dao.js";
 
+
 export const produtos = (app, bd) => {
 
   const dadosDao = new ProdutosDao(bd)
@@ -43,20 +44,20 @@ export const produtos = (app, bd) => {
       data();
     });
 
-        app.put('/produtos/:id', (req, res) => { 
-          const body = req.body;
-          const id = req.params.id;
-          const parametro = 
-          [body.nome, body.cor, body.marca, body.peso, body.tamanho, body.valor, body.descricao, id]
-          const data = async() => {
-            try{
-              const produtos = await dadosDao.alterarProdutos(parametro)
-              res.status(201).json(produtos)
-            }catch(error) {
-              res.status(404).json(error)
-            }
+      app.put('/produtos/:id', (req, res) => { 
+        const body = req.body;
+        const id = req.params.id;
+        const parametro = 
+        [body.nome, body.cor, body.marca, body.peso, body.tamanho, body.valor, body.descricao, id]
+        const data = async() => {
+          try{
+            const produtos = await dadosDao.alterarProdutos(parametro)
+            res.status(201).json(produtos)
+          }catch(error) {
+            res.status(404).json(error)
           }
-          data(); 
+        }
+        data(); 
     }); 
 
       app.delete('/produtos/:id', (req, res) => { 

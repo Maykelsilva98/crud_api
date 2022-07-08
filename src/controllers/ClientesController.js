@@ -35,15 +35,15 @@ export const ClientesController = (app, db) => {
     app.post("/clientes", async (req, res) => {
         const body = req.body
         const novoCliente = new ClientesModel(
-            body.cpf, 
-            body.email, 
-            body.endereco, 
-            body.sexo, 
-            body.data_nascimento, 
-            body.celular, 
-            body.id_compras, 
-            body.id_pagamentos, 
-            body.data_insercao
+            body.CPF, 
+            body.EAMAIL, 
+            body.ENDERECO, 
+            body.SEXO, 
+            body.DATA_NASCIMENTO, 
+            body.CELULAR, 
+            body.ID_COMPRAS, 
+            body.ID_PAGAMENTOS, 
+            body.DATA_INSERCAO
         )
         
         try {
@@ -64,15 +64,15 @@ export const ClientesController = (app, db) => {
         const clienteAntigo = await dao.getClientesByID(param)
 
         const clienteNovo = new ClientesModel(
-            body.CPF || clienteAntigo.cpf, 
-            body.EMAIL || clienteAntigo.email, 
-            body.ENDERECO || clienteAntigo.endereco, 
-            body.SEXO || clienteAntigo.sexo, 
-            body.DATA_NASCIMENTO || clienteAntigo.data_nascimento, 
-            body.CELULAR || clienteAntigo.celular, 
-            body.ID_COMPRAS || clienteAntigo.id_compras, 
-            body.ID_COMPRAS || clienteAntigo.id_pagamentos, 
-            body.DATA_INSERCAO || clienteAntigo.data_insercao
+            body.CPF || clienteAntigo.CPF, 
+            body.EMAIL || clienteAntigo.EMAIL, 
+            body.ENDERECO || clienteAntigo.ENDERECO, 
+            body.SEXO || clienteAntigo.SEXO, 
+            body.DATA_NASCIMENTO || clienteAntigo.DATA_NASCIMENTO, 
+            body.CELULAR || clienteAntigo.CELULAR, 
+            body.ID_COMPRAS || clienteAntigo.ID_COMPRAS, 
+            body.ID_PAGAMENTOS || clienteAntigo.ID_PAGAMENTOS, 
+            body.DATA_INSERCAO || clienteAntigo.DATA_INSERCAO
         )
         
         try {

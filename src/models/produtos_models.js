@@ -1,3 +1,4 @@
+import {v4 as uuidv4} from "uuid"
 export class Produtos {
     constructor(nome, cor, marca, peso, tamanho, valor, descricao) {
         this.id = uuidv4();
