@@ -5,8 +5,8 @@ export class ProdutosDao {
 
     listarProdutos() {
         return new Promise((resolve, reject) => {
-            this.database.all(`SELECT * FROM PRODUTOS`, (error, resultado) => { 
-                if (error) reject("Erro ao inserir o banco")
+            this.database.query(`SELECT * FROM PRODUTOS`, (error, resultado) => { 
+                if (error) reject("Erro ao acessar o banco")
                 else resolve(resultado)
               })
         })
@@ -14,8 +14,8 @@ export class ProdutosDao {
 
     listarProdutosID(id) {
       return new Promise((resolve, reject) => {
-        this.database.all(`SELECT * FROM PRODUTOS WHERE id = ${id}`, (error, resultado) => {
-            if(error) reject("Erro ao adicionar o banco")
+        this.database.query(`SELECT * FROM PRODUTOS WHERE id = ${id}`, (error, resultado) => {
+            if(error) reject("Erro ao listar banco")
             else resolve(resultado)
               })
         })
@@ -23,21 +23,21 @@ export class ProdutosDao {
 
     addProdutos(Produto) {
         return new Promise ((resolve, reject) => {
-            this.database.run(
-                `INSERT INTO PRODUTOS (id, nome, cor, marca, peso, tamanho, valor, descricao) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
-                [Produto.id, Produto.nome, Produto.cor, Produto.marca, Produto.peso, Produto.tamanho, Produto.valor, Produto.descricao],
+            this.database.query(
+                `INSERT INTO PRODUTOS (id, nome, cor, marca, peso, tamanho, valor, descricao, imagem_url) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                [Produto.id, Produto.nome, Produto.cor, Produto.marca, Produto.peso, Produto.tamanho, Produto.valor, Produto.descricao, Produto.imagem_url],
                 (error) => {
-                  if(error) reject("Erro ao adicionar o banco")
+                  if(error) reject("Erro ao adicionar banco")
                   else resolve("Valor inserido")
                 })
         })
     }
 
-    alterarProdutos(parametro) {
+    alterarProdutos(produtosAtualizados, id) {
         return new Promise((resolve, reject) => {
-            this.database.run(`UPDATE PRODUTOS 
-            SET nome = ?, cor = ?, marca = ?, peso = ?, tamanho = ?, valor = ?, descricao = ? WHERE id = ?`, parametro,
+            this.database.query(`UPDATE PRODUTOS 
+            SET nome = ?, cor = ?, marca = ?, peso = ?, tamanho = ?, valor = ?, descricao = ?, imagem_url=?  WHERE id = ?`, produtosAtualizados,
                 (error) => {
                   if(error) reject ("Erro ao atualizar produto")
                   else resolve("Produto atualizado")
@@ -47,7 +47,7 @@ export class ProdutosDao {
 
     deletaProdutos(id) {
         return new Promise((resolve, reject) => {
-            this.database.run(`DELETE FROM PRODUTOS WHERE id = ${id}`,
+            this.database.query(`DELETE FROM PRODUTOS WHERE id = ${id}`,
                 (error) => {
                   if(error) reject (error.message)
                   else resolve("Produto deletado")
