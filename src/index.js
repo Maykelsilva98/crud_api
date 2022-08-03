@@ -9,11 +9,12 @@ import { ProdutosDao } from './DAO/produtos_dao.js'
 
 
 
+const port = process.env.PORT || 3000
 
 const app = express()
 
-app.use(express.json())
 app.use(cors())
+app.use(express.json())
 
 pagamentosController(app, bd)
 ClientesController(app, bd)
@@ -21,8 +22,8 @@ compras(app, bd);
 produtos(app, bd);
 
 
-app.listen(3000, ()=>{
-    console.log('Servidor rodando na porta 3000');
+app.listen(port, ()=>{
+    console.log(`Servidor rodando na porta ${port}`);
 })
 
 
