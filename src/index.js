@@ -15,9 +15,9 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-pagamentosController(app, bd)
-ClientesController(app, bd)
-compras(app, bd);
+// pagamentosController(app, bd)
+// ClientesController(app, bd)
+// compras(app, bd);
 produtos(app, bd);
 
 const port = process.env.PORT || 3000
