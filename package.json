@@ -24,8 +24,7 @@
   },
   "contributors": [],
   "scripts": {
-    "start": "serve -s build",
-    "heroku-postbuild": "npm run build"
+    "start": "serve -s build"
     },
   "dependencies": {
     "cors": "^2.8.5",
