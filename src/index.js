@@ -9,7 +9,6 @@ import { ProdutosDao } from './DAO/produtos_dao.js'
 
 
 
-const port = process.env.PORT || 3000
 
 const app = express()
 
@@ -21,6 +20,7 @@ ClientesController(app, bd)
 compras(app, bd);
 produtos(app, bd);
 
+const port = process.env.PORT || 3000
 
 app.listen(port, ()=>{
     console.log(`Servidor rodando na porta ${port}`);
