@@ -24,8 +24,8 @@
   },
   "contributors": [],
   "scripts": {
-    "start": "serve -s build"
-    },
+    "start": "node src/index"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "ejs": "^3.1.8",
