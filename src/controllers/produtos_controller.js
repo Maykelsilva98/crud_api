@@ -51,14 +51,14 @@ export const produtos = (app, bd) => {
       const dadoNovo = req.body;
 
       const produtosAtualizados = new Produtos(
-            dadoNovo.nome || produtosDadosAntigos[0].NOME, 
-            dadoNovo.cor || produtosDadosAntigos[0].COR, 
-            dadoNovo.marca || produtosDadosAntigos[0].MARCA,
-            dadoNovo.peso || produtosDadosAntigos[0].PESO,
-            dadoNovo.tamanho || produtosDadosAntigos[0].TAMANHO,
-            dadoNovo.valor || produtosDadosAntigos[0].VALOR,
-            dadoNovo.descricao || produtosDadosAntigos[0].DESCRICAO,
-            dadoNovo.imagem_url || produtosDadosAntigos[0].IMAGEM_URL
+            dadoNovo.nome || produtosDadosAntigos[0].nome, 
+            dadoNovo.cor || produtosDadosAntigos[0].cor, 
+            dadoNovo.marca || produtosDadosAntigos[0].marca,
+            dadoNovo.peso || produtosDadosAntigos[0].peso,
+            dadoNovo.tamanho || produtosDadosAntigos[0].tamanho,
+            dadoNovo.valor || produtosDadosAntigos[0].valor,
+            dadoNovo.descricao || produtosDadosAntigos[0].descricao,
+            dadoNovo.imagem_url || produtosDadosAntigos[0].imagem_url
             ) 
         console.log(produtosDadosAntigos)
         console.log(produtosAtualizados)
